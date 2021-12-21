@@ -10,7 +10,7 @@ public:
     Vec2   scale = {1.0, 1.0};
     double angle = 0.0;
 
-    CTransform(Vec2 &pos, Vec2 &speed, Vec2 &scale, double angle) :
+    CTransform(Vec2 pos, Vec2 speed, Vec2 scale, double angle) :
             pos(pos), speed(speed), scale(scale), angle(angle) {};
 };
 

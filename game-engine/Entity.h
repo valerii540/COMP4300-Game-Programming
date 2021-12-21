@@ -1,8 +1,7 @@
 #ifndef COMP4300_GAME_PROGRAMMING_ENTITY_H
 #define COMP4300_GAME_PROGRAMMING_ENTITY_H
 
-#include <string>
-#include <memory>
+#include "Common.h"
 #include "components/CTransform.h"
 #include "components/CShape.h"
 #include "components/CCollision.h"
@@ -12,9 +11,13 @@
 
 
 class Entity {
+    friend class EntityManager;
+
     std::string m_tag    = "default";
     bool        m_active = true;
     size_t      m_id     = 0;
+
+    Entity(size_t id, const std::string &tag);
 
 public:
     std::shared_ptr<CTransform> cTransform;
@@ -23,8 +26,6 @@ public:
     std::shared_ptr<CInput>     cInput;
     std::shared_ptr<CScore>     cScore;
     std::shared_ptr<CLifespan>  cLifespan;
-
-    Entity(size_t id, const std::string &tag);
 
     [[nodiscard]] bool isActive() const;
 

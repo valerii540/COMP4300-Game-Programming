@@ -1,9 +1,7 @@
 #ifndef COMP4300_GAME_PROGRAMMING_ENTITYMANAGER_H
 #define COMP4300_GAME_PROGRAMMING_ENTITYMANAGER_H
 
-#include <vector>
-#include <map>
-#include <memory>
+#include "Common.h"
 #include "Entity.h"
 
 typedef std::vector<std::shared_ptr<Entity>> EntityVec;
@@ -12,7 +10,7 @@ typedef std::map<std::string, EntityVec>     EntityMap;
 class EntityManager {
     EntityVec m_entities;
     EntityVec m_entitiesToAdd;
-    EntityVec m_entityMap;
+    EntityMap m_entityMap;
     size_t    m_totalEntities = 0;
 
     void removeDeadEntities(EntityVec &vec);

@@ -1,7 +1,7 @@
 #ifndef COMP4300_GAME_PROGRAMMING_CSHAPE_H
 #define COMP4300_GAME_PROGRAMMING_CSHAPE_H
 
-#include <SFML/Graphics/CircleShape.hpp>
+#include "../Common.h"
 
 class CShape {
 public:
