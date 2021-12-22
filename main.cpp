@@ -1,7 +1,6 @@
-#include <iostream>
 #include "Game.h"
 
 int main() {
-   Game g("config.txt");
+   Game g("../config.json");
    g.run();
 }

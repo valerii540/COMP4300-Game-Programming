@@ -1,16 +1,14 @@
 #include "Game.h"
 
-Game::Game(const std::string &configPath) {
-    init(configPath);
+Game::Game(const std::string &configPath) :
+        m_configLoader(configPath) {
+    init();
 }
 
-void Game::init(const std::string &configPath) {
-    //TODO: read config
-
-
+void Game::init() {
     m_player = m_entityManager.addEntity("player");
     m_player->cTransform = std::make_shared<CTransform>(Vec2(100, 100), Vec2(0, 0), Vec2(1, 1), 90.0);
-    m_player->cShape = std::make_shared<CShape>(50.f, 5, sf::Color::Cyan, sf::Color::Green, 2);
+    m_player->cShape     = std::make_shared<CShape>(50.f, 5, sf::Color::Cyan, sf::Color::Green, 2);
 //    m_player->cTransform->pos = Vec2(100, 100);
 
 

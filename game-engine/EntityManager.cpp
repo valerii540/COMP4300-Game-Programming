@@ -14,7 +14,7 @@ void EntityManager::update() {
             m_entitiesToAdd.end()
     );
 
-    for (auto entityToAdd: m_entitiesToAdd)
+    for (const auto& entityToAdd: m_entitiesToAdd)
         m_entityMap[entityToAdd->tag()].push_back(entityToAdd);
 
     m_entitiesToAdd.clear();

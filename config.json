@@ -1,0 +1,68 @@
+{
+  "window": {
+    "width": 1280,
+    "height": 720,
+    "frameLimit": 60,
+    "fullScreen": false
+  },
+  "font": {
+    "path": "fonts/arial.ttf",
+    "size": 24,
+    "color": {
+      "r": 255,
+      "g": 255,
+      "b": 255
+    }
+  },
+  "player": {
+    "shapeRadius": 32,
+    "collisionRadius": 32,
+    "speed": 5,
+    "fillColor": {
+      "r": 5,
+      "g": 5,
+      "b": 5
+    },
+    "outlineColor": {
+      "r": 255,
+      "g": 0,
+      "b": 0
+    },
+    "outlineThickness": 4,
+    "shapeVertices": 8
+  },
+  "enemy": {
+    "shapeRadius": 32,
+    "collisionRadius": 32,
+    "minSpeed": 3,
+    "maxSpeed": 3,
+    "outlineColor": {
+      "r": 255,
+      "g": 255,
+      "b": 255
+    },
+    "outlineThickness": 2,
+    "minVertices": 3,
+    "maxVertices": 8,
+    "smallLifespan": 90,
+    "spawnInterval": 120
+  },
+  "bullet": {
+    "shapeRadius": 10,
+    "collisionRadius": 10,
+    "speed": 20,
+    "fillColor": {
+      "r": 255,
+      "g": 255,
+      "b": 255
+    },
+    "outlineColor": {
+      "r": 255,
+      "g": 255,
+      "b": 255
+    },
+    "outlineThickness": 2,
+    "shapeVertices": 20,
+    "lifespan": 90
+  }
+}
