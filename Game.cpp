@@ -7,13 +7,21 @@ Game::Game(const std::string &configPath) :
 
 void Game::init() {
     m_player = m_entityManager.addEntity("player");
-    m_player->cTransform = std::make_shared<CTransform>(Vec2(100, 100), Vec2(0, 0), Vec2(1, 1), 90.0);
-    m_player->cShape     = std::make_shared<CShape>(50.f, 5, sf::Color::Cyan, sf::Color::Green, 2);
-//    m_player->cTransform->pos = Vec2(100, 100);
+
+    Vec2 centerPos = Vec2(m_configLoader.config.window.width / 2.0, m_configLoader.config.window.height / 2.0);
+    m_player->cTransform = std::make_shared<CTransform>(centerPos, Vec2(0, 0), Vec2(1, 1), 0.0);
+
+    m_player->cShape = std::make_shared<CShape>(
+            m_configLoader.config.player.shapeRadius,
+            m_configLoader.config.player.shapeVertices,
+            m_configLoader.config.player.fillColor.toSFML(),
+            m_configLoader.config.player.outlineColor.toSFML(),
+            m_configLoader.config.player.outlineThickness);
 
 
-    m_window.create(sf::VideoMode(1280, 720), "Assignment 2");
-    m_window.setFramerateLimit(60);
+    m_window.create(sf::VideoMode(m_configLoader.config.window.width, m_configLoader.config.window.height),
+                    "Assignment 2");
+    m_window.setFramerateLimit(m_configLoader.config.window.frameLimit);
 
     spawnPlayer();
 }

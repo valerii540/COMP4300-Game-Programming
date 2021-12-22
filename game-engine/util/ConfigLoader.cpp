@@ -9,9 +9,9 @@ ConfigLoader::ConfigLoader(const std::string &path) {
     file >> jsonConfig;
     file.close();
 
-    gameConfig.window = jsonConfig.at("window").get<WindowConfig>();
-    gameConfig.font   = jsonConfig.at("font").get<FontConfig>();
-    gameConfig.player = jsonConfig.at("player").get<PlayerConfig>();
-    gameConfig.enemy  = jsonConfig.at("enemy").get<EnemyConfig>();
-    gameConfig.bullet = jsonConfig.at("bullet").get<BulletConfig>();
+    config.window = jsonConfig.at("window").get<WindowConfig>();
+    config.font   = jsonConfig.at("font").get<FontConfig>();
+    config.player = jsonConfig.at("player").get<PlayerConfig>();
+    config.enemy  = jsonConfig.at("enemy").get<EnemyConfig>();
+    config.bullet = jsonConfig.at("bullet").get<BulletConfig>();
 }

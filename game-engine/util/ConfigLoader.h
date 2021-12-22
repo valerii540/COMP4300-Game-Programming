@@ -1,10 +1,9 @@
 #ifndef ASSIGNMENT_2_CONFIGLOADER_H
 #define ASSIGNMENT_2_CONFIGLOADER_H
 
-#include <string>
 #include "../../libs/json.hpp"
 #include <fstream>
-#include <iostream>
+#include "../Common.h"
 
 using namespace nlohmann;
 
@@ -18,6 +17,8 @@ class ConfigLoader {
 
     struct Color {
         int r, g, b;
+
+        sf::Color toSFML() { return sf::Color(r, g, b); }
 
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(Color, r, g, b);
     };
@@ -64,7 +65,7 @@ public:
         PlayerConfig player = PlayerConfig();
         EnemyConfig  enemy  = EnemyConfig();
         BulletConfig bullet = BulletConfig();
-    } gameConfig;
+    } config;
 
     ConfigLoader(const std::string &path);
 };
