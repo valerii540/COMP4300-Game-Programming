@@ -1,14 +1,15 @@
 #ifndef COMP4300_GAME_PROGRAMMING_CINPUT_H
 #define COMP4300_GAME_PROGRAMMING_CINPUT_H
 
+namespace CInputNS {
+    enum InputAction {
+        None, Up, Left, Right, Down, Shoot
+    };
+}
+
 class CInput {
 public:
-    bool up    = false;
-    bool left  = false;
-    bool right = false;
-    bool down  = false;
-
-    bool shoot = false;
+    CInputNS::InputAction action = CInputNS::None;
 };
 
 #endif //COMP4300_GAME_PROGRAMMING_CINPUT_H

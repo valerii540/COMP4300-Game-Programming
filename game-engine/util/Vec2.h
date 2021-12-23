@@ -10,6 +10,8 @@ public:
 
     Vec2(double x, double y) : x(x), y(y) {}
 
+    Vec2(double xy) : x(xy), y(xy) {}
+
     [[nodiscard]] double length() const;
 
     [[maybe_unused]] void normalize();

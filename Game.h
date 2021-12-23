@@ -4,22 +4,23 @@
 #include "game-engine/Common.h"
 #include "game-engine/EntityManager.h"
 #include "game-engine/util/ConfigLoader.h"
+#include <cmath>
 
 class Game {
-    ConfigLoader     m_configLoader;
-    sf::RenderWindow m_window;
-    EntityManager    m_entityManager;
-    sf::Font         m_font;
-    sf::Text         m_text;
-    int              m_score              = 0;
-    int              m_currentFrame       = 0;
-    int              m_lastEnemySpawnTime = 0;
-    bool             m_paused             = false;
-    bool             m_running            = true;
+    std::shared_ptr<ConfigLoader::GameConfig> m_config;
+    sf::RenderWindow                          m_window;
+    EntityManager                             m_entityManager;
+    sf::Font                                  m_font;
+    sf::Text                                  m_text;
+    int                                       m_score              = 0;
+    int                                       m_currentFrame       = 0;
+    int                                       m_lastEnemySpawnTime = 0;
+    bool                                      m_paused             = false;
+    bool                                      m_running            = true;
 
     std::shared_ptr<Entity> m_player;
 
-    void init();
+    void init(const std::string &configPath);
 
     void setPaused(bool paused);
 

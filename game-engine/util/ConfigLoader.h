@@ -34,10 +34,10 @@ class ConfigLoader {
     struct PlayerConfig {
         int   shapeRadius, shapeVertices, collisionRadius, outlineThickness;
         Color fillColor, outlineColor;
-        float speed;
+        float speed, maxSpeed;
 
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(PlayerConfig, shapeRadius, shapeVertices, collisionRadius, outlineThickness,
-                                       fillColor, outlineColor, speed);
+                                       fillColor, outlineColor, speed, maxSpeed);
     };
 
     struct EnemyConfig {
@@ -65,9 +65,9 @@ public:
         PlayerConfig player = PlayerConfig();
         EnemyConfig  enemy  = EnemyConfig();
         BulletConfig bullet = BulletConfig();
-    } config;
+    };
 
-    ConfigLoader(const std::string &path);
+    static std::shared_ptr<ConfigLoader::GameConfig> loadConfig(const std::string &path);
 };
 
 

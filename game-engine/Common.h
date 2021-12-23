@@ -11,5 +11,4 @@
 #include <sstream>
 #include <algorithm>
 
-
 #endif //ASSIGNMENT_2_COMMON_H

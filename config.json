@@ -18,6 +18,7 @@
     "shapeRadius": 32,
     "collisionRadius": 32,
     "speed": 5,
+    "maxSpeed": 10,
     "fillColor": {
       "r": 5,
       "g": 5,
