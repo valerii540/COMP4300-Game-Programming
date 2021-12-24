@@ -53,6 +53,7 @@ void Game::sCollision() {
 }
 
 void Game::sMovement() {
+    // Player movement
     if (m_player->cInput->up) {
         float newYSpeed = m_player->cTransform->speed.y - m_config->player.speed;
         if (std::abs(newYSpeed) < m_config->player.maxSpeed)
@@ -95,6 +96,10 @@ void Game::sMovement() {
         m_player->cTransform->speed.x *= -1.f;
         m_player->cTransform->speed.y *= -1.f;
     }
+
+    //Bullets movement
+    for (const auto &bullet: m_entityManager.getEntities("bullet"))
+        bullet->cTransform->pos = bullet->cTransform->pos + bullet->cTransform->speed;
 }
 
 void Game::sUserInput() {
@@ -145,6 +150,10 @@ void Game::sUserInput() {
                         break;
                 }
                 break;
+            case sf::Event::MouseButtonPressed:
+                if (event.mouseButton.button == sf::Mouse::Button::Left)
+                    spawnBullet(Vec2(event.mouseButton.x, event.mouseButton.y));
+                break;
             case sf::Event::Closed:
                 m_running = false;
                 break;
@@ -161,12 +170,19 @@ void Game::sLifespan() {
 void Game::sRender() {
     m_window.clear();
 
+    // Player rendering
     m_player->cShape->circle.setPosition(m_player->cTransform->pos.x, m_player->cTransform->pos.y);
 
     m_player->cTransform->angle += 1.0f;
     m_player->cShape->circle.setRotation(m_player->cTransform->angle);
 
     m_window.draw(m_player->cShape->circle);
+
+    // Bullets rendering
+    for (auto bullet: m_entityManager.getEntities("bullet")) {
+        bullet->cShape->circle.setPosition(bullet->cTransform->pos.x, bullet->cTransform->pos.y);
+        m_window.draw(bullet->cShape->circle);
+    }
 
     m_window.display();
 }
@@ -177,4 +193,28 @@ void Game::sEnemySpawner() {
 
 void Game::spawnPlayer() {
 
+}
+
+void Game::spawnBullet(const Vec2 &mousePos) {
+    auto bullet = m_entityManager.addEntity("bullet");
+
+    float angle = std::atan2(mousePos.y - m_player->cTransform->pos.y, mousePos.x - m_player->cTransform->pos.x);
+
+    Vec2 direction = Vec2(std::cos(angle), std::sin(angle));
+    direction.normalize();
+
+    bullet->cTransform = std::make_shared<CTransform>(
+            m_player->cTransform->pos,
+            direction * Vec2(m_config->bullet.speed),
+            Vec2(1),
+            0.0
+    );
+
+    bullet->cShape = std::make_shared<CShape>(
+            m_config->bullet.shapeRadius,
+            m_config->bullet.shapeVertices,
+            m_config->bullet.fillColor.toSFML(),
+            m_config->bullet.outlineColor.toSFML(),
+            m_config->bullet.outlineThickness
+    );
 }
