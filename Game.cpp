@@ -69,25 +69,25 @@ void Game::sMovement() {
         case CInputNS::Up: {
             float newYSpeed = m_player->cTransform->speed.y - m_config->player.speed;
             if (std::abs(newYSpeed) < m_config->player.maxSpeed)
-                m_player->cTransform->speed.y -= m_config->player.speed;
+                m_player->cTransform->speed.y = newYSpeed;
             break;
         }
         case CInputNS::Left: {
             float newXSpeed = m_player->cTransform->speed.x - m_config->player.speed;
             if (std::abs(newXSpeed) < m_config->player.maxSpeed)
-                m_player->cTransform->speed.x -= m_config->player.speed;
+                m_player->cTransform->speed.x = newXSpeed;
             break;
         }
         case CInputNS::Right: {
             float newXSpeed = m_player->cTransform->speed.x + m_config->player.speed;
             if (std::abs(newXSpeed) < m_config->player.maxSpeed)
-                m_player->cTransform->speed.x += m_config->player.speed;
+                m_player->cTransform->speed.x = newXSpeed;
             break;
         }
         case CInputNS::Down: {
             float newYSpeed = m_player->cTransform->speed.y + m_config->player.speed;
             if (std::abs(newYSpeed) < m_config->player.maxSpeed)
-                m_player->cTransform->speed.y += m_config->player.speed;
+                m_player->cTransform->speed.y = newYSpeed;
             break;
         }
         case CInputNS::Shoot:
@@ -96,14 +96,15 @@ void Game::sMovement() {
 
     Vec2 newPosition = m_player->cTransform->pos + m_player->cTransform->speed;
     if (newPosition.x > (0 + m_config->player.shapeRadius) &&
-        newPosition.x<(m_config->window.width - m_config->player.shapeRadius) &&
-                      newPosition.y>(0 + m_config->player.shapeRadius) &&
+        newPosition.x < (m_config->window.width - m_config->player.shapeRadius) &&
+        newPosition.y > (0 + m_config->player.shapeRadius) &&
         newPosition.y < (m_config->window.height - m_config->player.shapeRadius)) {
 
         m_player->cTransform->pos = newPosition;
+    } else {
+        m_player->cTransform->speed.x *= -1.f;
+        m_player->cTransform->speed.y *= -1.f;
     }
-
-    m_player->cInput->action = CInputNS::None;
 }
 
 void Game::sUserInput() {
@@ -131,6 +132,9 @@ void Game::sUserInput() {
                     default:
                         break;
                 }
+                break;
+            case sf::Event::KeyReleased:
+                m_player->cInput->action = CInputNS::None;
                 break;
             case sf::Event::Closed:
                 m_running = false;
