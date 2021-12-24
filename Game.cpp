@@ -1,5 +1,4 @@
 #include "Game.h"
-#include <iostream>
 
 Game::Game(const std::string &configPath) {
     init(configPath);
@@ -54,47 +53,41 @@ void Game::sCollision() {
 }
 
 void Game::sMovement() {
-    switch (m_player->cInput->action) {
-        case CInputNS::None:
-            m_player->cTransform->speed.x = m_player->cTransform->speed.x * 0.9;
-            m_player->cTransform->speed.y = m_player->cTransform->speed.y * 0.9;
-            break;
-        case CInputNS::Up: {
-            float newYSpeed = m_player->cTransform->speed.y - m_config->player.speed;
-            m_player->cTransform->speed.x = m_player->cTransform->speed.x * 0.9;
-            if (std::abs(newYSpeed) < m_config->player.maxSpeed)
-                m_player->cTransform->speed.y = newYSpeed;
-            break;
-        }
-        case CInputNS::Left: {
-            float newXSpeed = m_player->cTransform->speed.x - m_config->player.speed;
-            m_player->cTransform->speed.y = m_player->cTransform->speed.y * 0.9;
-            if (std::abs(newXSpeed) < m_config->player.maxSpeed)
-                m_player->cTransform->speed.x = newXSpeed;
-            break;
-        }
-        case CInputNS::Right: {
-            float newXSpeed = m_player->cTransform->speed.x + m_config->player.speed;
-            m_player->cTransform->speed.y = m_player->cTransform->speed.y * 0.9;
-            if (std::abs(newXSpeed) < m_config->player.maxSpeed)
-                m_player->cTransform->speed.x = newXSpeed;
-            break;
-        }
-        case CInputNS::Down: {
-            float newYSpeed = m_player->cTransform->speed.y + m_config->player.speed;
-            m_player->cTransform->speed.x = m_player->cTransform->speed.x * 0.9;
-            if (std::abs(newYSpeed) < m_config->player.maxSpeed)
-                m_player->cTransform->speed.y = newYSpeed;
-            break;
-        }
-        case CInputNS::Shoot:
-            break;
+    if (m_player->cInput->up) {
+        float newYSpeed = m_player->cTransform->speed.y - m_config->player.speed;
+        if (std::abs(newYSpeed) < m_config->player.maxSpeed)
+            m_player->cTransform->speed.y = newYSpeed;
     }
+
+    if (m_player->cInput->down) {
+        float newYSpeed = m_player->cTransform->speed.y + m_config->player.speed;
+        if (std::abs(newYSpeed) < m_config->player.maxSpeed)
+            m_player->cTransform->speed.y = newYSpeed;
+    }
+
+    if (m_player->cInput->left) {
+        float newXSpeed = m_player->cTransform->speed.x - m_config->player.speed;
+        if (std::abs(newXSpeed) < m_config->player.maxSpeed)
+            m_player->cTransform->speed.x = newXSpeed;
+    }
+
+    if (m_player->cInput->right) {
+        float newXSpeed = m_player->cTransform->speed.x + m_config->player.speed;
+        if (std::abs(newXSpeed) < m_config->player.maxSpeed)
+            m_player->cTransform->speed.x = newXSpeed;
+    }
+
+
+    if (!m_player->cInput->up && !m_player->cInput->down)
+        m_player->cTransform->speed.y *= 0.9;
+
+    if (!m_player->cInput->left && !m_player->cInput->right)
+        m_player->cTransform->speed.x *= 0.9;
 
     Vec2 newPosition = m_player->cTransform->pos + m_player->cTransform->speed;
     if (newPosition.x > (0 + m_config->player.shapeRadius) &&
-        newPosition.x < (m_config->window.width - m_config->player.shapeRadius) &&
-        newPosition.y > (0 + m_config->player.shapeRadius) &&
+        newPosition.x<(m_config->window.width - m_config->player.shapeRadius) &&
+                      newPosition.y>(0 + m_config->player.shapeRadius) &&
         newPosition.y < (m_config->window.height - m_config->player.shapeRadius)) {
 
         m_player->cTransform->pos = newPosition;
@@ -115,23 +108,42 @@ void Game::sUserInput() {
                         break;
 
                     case sf::Keyboard::A:
-                        m_player->cInput->action = CInputNS::Left;
+                        m_player->cInput->left = true;
                         break;
                     case sf::Keyboard::D:
-                        m_player->cInput->action = CInputNS::Right;
+                        m_player->cInput->right = true;
                         break;
                     case sf::Keyboard::W:
-                        m_player->cInput->action = CInputNS::Up;
+                        m_player->cInput->up = true;
                         break;
                     case sf::Keyboard::S:
-                        m_player->cInput->action = CInputNS::Down;
+                        m_player->cInput->down = true;
                         break;
                     default:
                         break;
                 }
                 break;
             case sf::Event::KeyReleased:
-                m_player->cInput->action = CInputNS::None;
+                switch (event.key.code) {
+                    case sf::Keyboard::Escape:
+                        m_running = false;
+                        break;
+
+                    case sf::Keyboard::A:
+                        m_player->cInput->left = false;
+                        break;
+                    case sf::Keyboard::D:
+                        m_player->cInput->right = false;
+                        break;
+                    case sf::Keyboard::W:
+                        m_player->cInput->up = false;
+                        break;
+                    case sf::Keyboard::S:
+                        m_player->cInput->down = false;
+                        break;
+                    default:
+                        break;
+                }
                 break;
             case sf::Event::Closed:
                 m_running = false;

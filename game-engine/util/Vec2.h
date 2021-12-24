@@ -2,6 +2,7 @@
 #define COMP4300_GAME_PROGRAMMING_VEC2_H
 
 #include <cmath>
+#include <iostream>
 
 class Vec2 {
 public:
@@ -27,6 +28,8 @@ public:
     friend Vec2 operator*(Vec2 const &v1, Vec2 const &v2);
 
     friend Vec2 operator/(Vec2 const &v1, Vec2 const &v2);
+
+    friend std::ostream& operator<<(std::ostream& os, const Vec2& v);
 };
 
 

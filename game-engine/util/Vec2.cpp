@@ -34,4 +34,9 @@ Vec2 operator/(const Vec2 &v1, const Vec2 &v2) {
     return {v1.x / v2.x, v1.y / v2.y};
 }
 
+std::ostream &operator<<(std::ostream &os, const Vec2 &vec) {
+    os << "Vec2(" << vec.x << ", " << vec.y << ")";
+    return os;
+}
+
 

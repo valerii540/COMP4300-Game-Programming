@@ -9,6 +9,7 @@
 #include <memory>
 #include <fstream>
 #include <sstream>
+#include <iostream>
 #include <algorithm>
 
 #endif //ASSIGNMENT_2_COMMON_H
