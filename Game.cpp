@@ -56,36 +56,33 @@ void Game::sCollision() {
 void Game::sMovement() {
     switch (m_player->cInput->action) {
         case CInputNS::None:
-            if (std::abs(m_player->cTransform->speed.x) <= 0.2f)
-                m_player->cTransform->speed.x = 0;
-            else
-                m_player->cTransform->speed.x -= m_player->cTransform->speed.x > 0 ? 0.2f : -0.2f;
-
-            if (std::abs(m_player->cTransform->speed.y) <= 0.2f)
-                m_player->cTransform->speed.y = 0;
-            else
-                m_player->cTransform->speed.y -= m_player->cTransform->speed.y > 0 ? 0.2f : -0.2f;
+            m_player->cTransform->speed.x = m_player->cTransform->speed.x * 0.9;
+            m_player->cTransform->speed.y = m_player->cTransform->speed.y * 0.9;
             break;
         case CInputNS::Up: {
             float newYSpeed = m_player->cTransform->speed.y - m_config->player.speed;
+            m_player->cTransform->speed.x = m_player->cTransform->speed.x * 0.9;
             if (std::abs(newYSpeed) < m_config->player.maxSpeed)
                 m_player->cTransform->speed.y = newYSpeed;
             break;
         }
         case CInputNS::Left: {
             float newXSpeed = m_player->cTransform->speed.x - m_config->player.speed;
+            m_player->cTransform->speed.y = m_player->cTransform->speed.y * 0.9;
             if (std::abs(newXSpeed) < m_config->player.maxSpeed)
                 m_player->cTransform->speed.x = newXSpeed;
             break;
         }
         case CInputNS::Right: {
             float newXSpeed = m_player->cTransform->speed.x + m_config->player.speed;
+            m_player->cTransform->speed.y = m_player->cTransform->speed.y * 0.9;
             if (std::abs(newXSpeed) < m_config->player.maxSpeed)
                 m_player->cTransform->speed.x = newXSpeed;
             break;
         }
         case CInputNS::Down: {
             float newYSpeed = m_player->cTransform->speed.y + m_config->player.speed;
+            m_player->cTransform->speed.x = m_player->cTransform->speed.x * 0.9;
             if (std::abs(newYSpeed) < m_config->player.maxSpeed)
                 m_player->cTransform->speed.y = newYSpeed;
             break;
