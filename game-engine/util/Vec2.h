@@ -17,6 +17,14 @@ public:
 
     [[maybe_unused]] void normalize();
 
+    void operator+=(const Vec2 &v);
+
+    void operator-=(const Vec2 &v);
+
+    void operator*=(const Vec2 &v);
+
+    void operator/=(const Vec2 &v);
+
     friend bool operator==(Vec2 const &v1, Vec2 const &v2);
 
     friend bool operator!=(Vec2 const &v1, Vec2 const &v2);
@@ -29,7 +37,7 @@ public:
 
     friend Vec2 operator/(Vec2 const &v1, Vec2 const &v2);
 
-    friend std::ostream& operator<<(std::ostream& os, const Vec2& v);
+    friend std::ostream &operator<<(std::ostream &os, const Vec2 &v);
 };
 
 

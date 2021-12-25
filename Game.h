@@ -5,6 +5,7 @@
 #include "game-engine/EntityManager.h"
 #include "game-engine/util/ConfigLoader.h"
 #include <cmath>
+#include <random>
 
 class Game {
     std::shared_ptr<ConfigLoader::GameConfig> m_config;
@@ -17,10 +18,9 @@ class Game {
     int                                       m_lastEnemySpawnTime = 0;
     bool                                      m_paused             = false;
     bool                                      m_running            = true;
+    std::mt19937                              m_random             = std::mt19937(time(nullptr));;
 
     std::shared_ptr<Entity> m_player;
-
-    void init(const std::string &configPath);
 
     void setPaused(bool paused);
 
@@ -38,6 +38,8 @@ class Game {
 
     bool itCollidingWithWalls(const std::shared_ptr<Entity> &entity, Vec2 &position);
 
+    static bool entitiesColliding(const std::shared_ptr<Entity> &entity1, const std::shared_ptr<Entity> &entity2);
+
     void spawnPlayer();
 
     void spawnEnemy();
@@ -49,7 +51,7 @@ class Game {
     void spawnSpecialWeapon(std::shared_ptr<Entity> entity);
 
 public:
-    Game(const std::string &configPath);
+    explicit Game(const std::string &configPath);
 
     void run();
 };

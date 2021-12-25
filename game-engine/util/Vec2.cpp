@@ -35,8 +35,27 @@ Vec2 operator/(const Vec2 &v1, const Vec2 &v2) {
 }
 
 std::ostream &operator<<(std::ostream &os, const Vec2 &vec) {
-    os << "Vec2(" << vec.x << ", " << vec.y << ")";
+    os << "(" << vec.x << ", " << vec.y << ")";
     return os;
 }
 
+void Vec2::operator+=(const Vec2 &v) {
+    this->x += v.x;
+    this->y += v.y;
+}
+
+void Vec2::operator-=(const Vec2 &v) {
+    this->x -= v.x;
+    this->y -= v.y;
+}
+
+void Vec2::operator*=(const Vec2 &v) {
+    this->x *= v.x;
+    this->y *= v.y;
+}
+
+void Vec2::operator/=(const Vec2 &v) {
+    this->x /= v.x;
+    this->y /= v.y;
+}
 
