@@ -36,6 +36,8 @@ class Game {
 
     void sCollision();
 
+    bool itCollidingWithWalls(const std::shared_ptr<Entity> &entity, Vec2 &position);
+
     void spawnPlayer();
 
     void spawnEnemy();

@@ -49,8 +49,22 @@ void Game::run() {
 }
 
 void Game::sCollision() {
-
+    // Bullets collision
+    for (const auto &bullet: m_entityManager.getEntities("bullet")) {
+        if (itCollidingWithWalls(bullet, bullet->cTransform->pos))
+            bullet->destroy();
+    }
 }
+
+// @formatter:off
+bool Game::itCollidingWithWalls(const std::shared_ptr<Entity> &entity, Vec2 &position) {
+    float shapeRadius = entity->cShape->circle.getRadius();
+    return !(position.x > (0 + shapeRadius) &&
+             position.x < (m_config->window.width - shapeRadius) &&
+             position.y > (0 + shapeRadius) &&
+             position.y < (m_config->window.height - shapeRadius));
+}
+// @formatter:on
 
 void Game::sMovement() {
     // Player movement
@@ -86,11 +100,7 @@ void Game::sMovement() {
         m_player->cTransform->speed.x *= 0.9;
 
     Vec2 newPosition = m_player->cTransform->pos + m_player->cTransform->speed;
-    if (newPosition.x > (0 + m_config->player.shapeRadius) &&
-        newPosition.x<(m_config->window.width - m_config->player.shapeRadius) &&
-                      newPosition.y>(0 + m_config->player.shapeRadius) &&
-        newPosition.y < (m_config->window.height - m_config->player.shapeRadius)) {
-
+    if (!itCollidingWithWalls(m_player, newPosition)) {
         m_player->cTransform->pos = newPosition;
     } else {
         m_player->cTransform->speed.x *= -1.f;
