@@ -8,35 +8,35 @@ void EntityManager::removeDeadEntities(EntityVec &vec) {
 }
 
 void EntityManager::update() {
-    m_entities.insert(
-            m_entities.end(),
-            m_entitiesToAdd.begin(),
-            m_entitiesToAdd.end()
+    entities_.insert(
+            entities_.end(),
+            entitiesToAdd_.begin(),
+            entitiesToAdd_.end()
     );
 
-    for (const auto& entityToAdd: m_entitiesToAdd)
-        m_entityMap[entityToAdd->tag()].push_back(entityToAdd);
+    for (const auto &entityToAdd: entitiesToAdd_)
+        entityMap_[entityToAdd->tag()].push_back(entityToAdd);
 
-    m_entitiesToAdd.clear();
+    entitiesToAdd_.clear();
 
-    removeDeadEntities(m_entities);
+    removeDeadEntities(entities_);
 
-    for (auto &[tag, entities]: m_entityMap)
+    for (auto &[tag, entities]: entityMap_)
         removeDeadEntities(entities);
 }
 
 std::shared_ptr<Entity> EntityManager::addEntity(const std::string &tag) {
-    auto entity = std::shared_ptr<Entity>(new Entity(m_totalEntities++, tag));
+    auto entity = std::shared_ptr<Entity>(new Entity(totalEntities_++, tag));
 
-    m_entitiesToAdd.push_back(entity);
+    entitiesToAdd_.push_back(entity);
 
     return entity;
 }
 
 const EntityVec &EntityManager::getEntities() {
-    return m_entities;
+    return entities_;
 }
 
 const EntityVec &EntityManager::getEntities(const std::string &tag) {
-    return m_entityMap[tag];
+    return entityMap_[tag];
 }

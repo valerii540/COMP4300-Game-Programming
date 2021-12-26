@@ -1,42 +1,42 @@
 #include "Game.h"
 
 Game::Game(const std::string &configPath) {
-    m_config = ConfigLoader::loadConfig(configPath);
+    config_ = ConfigLoader::loadConfig(configPath);
 
-    m_window.create(sf::VideoMode(m_config->window.width, m_config->window.height),
-                    "Assignment 2");
-    m_window.setFramerateLimit(m_config->window.frameLimit);
+    window_.create(sf::VideoMode(config_->window.width, config_->window.height),
+                   "Assignment 2");
+    window_.setFramerateLimit(config_->window.frameLimit);
 
     spawnPlayer();
 }
 
 void Game::run() {
-    while (m_running) {
-        if (!m_paused) {
-            m_entityManager.update();
+    while (running_) {
+        if (!paused_) {
+            entityManager_.update();
 
             sCollision();
             sUserInput();
             sMovement();
             sEnemySpawner();
 
-            m_currentFrame++;
+            currentFrame_++;
         }
 
         sRender();
     }
 
-    m_window.close();
+    window_.close();
 }
 
 void Game::sCollision() {
-    for (const auto &enemy: m_entityManager.getEntities("enemy")) {
-        if (entitiesColliding(m_player, enemy)) {
-            m_player->destroy();
+    for (const auto &enemy: entityManager_.getEntities("enemy")) {
+        if (entitiesColliding(player_, enemy)) {
+            player_->destroy();
             spawnPlayer();
         }
 
-        for (const auto &bullet: m_entityManager.getEntities("bullet")) {
+        for (const auto &bullet: entityManager_.getEntities("bullet")) {
             if (entitiesColliding(enemy, bullet)) {
                 bullet->destroy();
                 enemy->destroy();
@@ -52,9 +52,9 @@ bool Game::itCollidingWithWalls(const std::shared_ptr<Entity> &entity, Vec2 &pos
 
     // @formatter:off
     return !(position.x > (0 + shapeRadius) &&
-             position.x < (m_config->window.width - shapeRadius) &&
+             position.x < (config_->window.width - shapeRadius) &&
              position.y > (0 + shapeRadius) &&
-             position.y < (m_config->window.height - shapeRadius));
+             position.y < (config_->window.height - shapeRadius));
     // @formatter:on
 }
 
@@ -68,69 +68,69 @@ bool Game::entitiesColliding(const std::shared_ptr<Entity> &entity1, const std::
 
 void Game::sMovement() {
     // Player movement
-    if (m_player->cInput->up) {
-        float newYSpeed = m_player->cTransform->speed.y - m_config->player.speed;
-        if (std::abs(newYSpeed) < m_config->player.maxSpeed)
-            m_player->cTransform->speed.y = newYSpeed;
+    if (player_->cInput->up) {
+        float newYSpeed = player_->cTransform->speed.y - config_->player.speed;
+        if (std::abs(newYSpeed) < config_->player.maxSpeed)
+            player_->cTransform->speed.y = newYSpeed;
     }
 
-    if (m_player->cInput->down) {
-        float newYSpeed = m_player->cTransform->speed.y + m_config->player.speed;
-        if (std::abs(newYSpeed) < m_config->player.maxSpeed)
-            m_player->cTransform->speed.y = newYSpeed;
+    if (player_->cInput->down) {
+        float newYSpeed = player_->cTransform->speed.y + config_->player.speed;
+        if (std::abs(newYSpeed) < config_->player.maxSpeed)
+            player_->cTransform->speed.y = newYSpeed;
     }
 
-    if (m_player->cInput->left) {
-        float newXSpeed = m_player->cTransform->speed.x - m_config->player.speed;
-        if (std::abs(newXSpeed) < m_config->player.maxSpeed)
-            m_player->cTransform->speed.x = newXSpeed;
+    if (player_->cInput->left) {
+        float newXSpeed = player_->cTransform->speed.x - config_->player.speed;
+        if (std::abs(newXSpeed) < config_->player.maxSpeed)
+            player_->cTransform->speed.x = newXSpeed;
     }
 
-    if (m_player->cInput->right) {
-        float newXSpeed = m_player->cTransform->speed.x + m_config->player.speed;
-        if (std::abs(newXSpeed) < m_config->player.maxSpeed)
-            m_player->cTransform->speed.x = newXSpeed;
+    if (player_->cInput->right) {
+        float newXSpeed = player_->cTransform->speed.x + config_->player.speed;
+        if (std::abs(newXSpeed) < config_->player.maxSpeed)
+            player_->cTransform->speed.x = newXSpeed;
     }
 
 
-    if (!m_player->cInput->up && !m_player->cInput->down)
-        m_player->cTransform->speed.y *= 0.9f;
+    if (!player_->cInput->up && !player_->cInput->down)
+        player_->cTransform->speed.y *= 0.9f;
 
-    if (!m_player->cInput->left && !m_player->cInput->right)
-        m_player->cTransform->speed.x *= 0.9f;
+    if (!player_->cInput->left && !player_->cInput->right)
+        player_->cTransform->speed.x *= 0.9f;
 
-    Vec2 newPosition = m_player->cTransform->pos + m_player->cTransform->speed;
-    if (!itCollidingWithWalls(m_player, newPosition))
-        m_player->cTransform->pos = newPosition;
+    Vec2 newPosition = player_->cTransform->pos + player_->cTransform->speed;
+    if (!itCollidingWithWalls(player_, newPosition))
+        player_->cTransform->pos = newPosition;
     else
-        m_player->cTransform->speed *= -1.f;
+        player_->cTransform->speed *= -1.f;
 
     //Bullets movement
-    for (const auto &bullet: m_entityManager.getEntities("bullet"))
+    for (const auto &bullet: entityManager_.getEntities("bullet"))
         bullet->cTransform->pos += bullet->cTransform->speed;
 }
 
 void Game::sUserInput() {
     sf::Event event;
-    while (m_window.pollEvent(event)) {
+    while (window_.pollEvent(event)) {
         switch (event.type) {
             case sf::Event::KeyPressed:
                 switch (event.key.code) {
                     case sf::Keyboard::Escape:
-                        m_running = false;
+                        running_ = false;
                         break;
 
                     case sf::Keyboard::A:
-                        m_player->cInput->left = true;
+                        player_->cInput->left = true;
                         break;
                     case sf::Keyboard::D:
-                        m_player->cInput->right = true;
+                        player_->cInput->right = true;
                         break;
                     case sf::Keyboard::W:
-                        m_player->cInput->up = true;
+                        player_->cInput->up = true;
                         break;
                     case sf::Keyboard::S:
-                        m_player->cInput->down = true;
+                        player_->cInput->down = true;
                         break;
                     default:
                         break;
@@ -139,20 +139,20 @@ void Game::sUserInput() {
             case sf::Event::KeyReleased:
                 switch (event.key.code) {
                     case sf::Keyboard::Escape:
-                        m_running = false;
+                        running_ = false;
                         break;
 
                     case sf::Keyboard::A:
-                        m_player->cInput->left = false;
+                        player_->cInput->left = false;
                         break;
                     case sf::Keyboard::D:
-                        m_player->cInput->right = false;
+                        player_->cInput->right = false;
                         break;
                     case sf::Keyboard::W:
-                        m_player->cInput->up = false;
+                        player_->cInput->up = false;
                         break;
                     case sf::Keyboard::S:
-                        m_player->cInput->down = false;
+                        player_->cInput->down = false;
                         break;
                     default:
                         break;
@@ -163,7 +163,7 @@ void Game::sUserInput() {
                     spawnBullet(Vec2(event.mouseButton.x, event.mouseButton.y));
                 break;
             case sf::Event::Closed:
-                m_running = false;
+                running_ = false;
                 break;
             default:
                 break;
@@ -176,35 +176,35 @@ void Game::sLifespan() {
 }
 
 void Game::sRender() {
-    m_window.clear();
+    window_.clear();
 
-    for (const auto &entity: m_entityManager.getEntities())
+    for (const auto &entity: entityManager_.getEntities())
         if (entity->cShape && entity->cTransform) {
             entity->cTransform->angle += 1.0f;
             entity->cShape->circle.setRotation(entity->cTransform->angle);
             entity->cShape->circle.setPosition(entity->cTransform->pos.x, entity->cTransform->pos.y);
-            m_window.draw(entity->cShape->circle);
+            window_.draw(entity->cShape->circle);
         }
 
-    m_window.display();
+    window_.display();
 }
 
 void Game::sEnemySpawner() {
-    if (m_currentFrame - m_lastEnemySpawnTime >= m_config->enemy.spawnInterval) {
-        m_lastEnemySpawnTime = m_currentFrame;
+    if (currentFrame_ - lastEnemySpawnTime_ >= config_->enemy.spawnInterval) {
+        lastEnemySpawnTime_ = currentFrame_;
 
         auto distX        = std::uniform_int_distribution(
-                (int) 0 + m_config->enemy.shapeRadius,
-                (int) m_window.getSize().x - m_config->enemy.shapeRadius
+                (int) 0 + config_->enemy.shapeRadius,
+                (int) window_.getSize().x - config_->enemy.shapeRadius
         );
         auto distY        = std::uniform_int_distribution(
-                (int) 0 + m_config->enemy.shapeRadius,
-                (int) m_window.getSize().y - m_config->enemy.shapeRadius
+                (int) 0 + config_->enemy.shapeRadius,
+                (int) window_.getSize().y - config_->enemy.shapeRadius
         );
-        auto distVertices = std::uniform_int_distribution(m_config->enemy.minVertices, m_config->enemy.maxVertices);
+        auto distVertices = std::uniform_int_distribution(config_->enemy.minVertices, config_->enemy.maxVertices);
         auto distRGB      = std::uniform_int_distribution(0, 255);
 
-        auto enemy = m_entityManager.addEntity("enemy");
+        auto enemy = entityManager_.addEntity("enemy");
         enemy->cTransform = std::make_shared<CTransform>(
                 Vec2(0),
                 Vec2(0),
@@ -212,59 +212,59 @@ void Game::sEnemySpawner() {
                 0
         );
         enemy->cShape     = std::make_shared<CShape>(
-                m_config->enemy.shapeRadius,
-                distVertices(m_random),
-                sf::Color(distRGB(m_random), distRGB(m_random), distRGB(m_random)),
-                m_config->enemy.outlineColor.toSFML(),
-                m_config->enemy.outlineThickness
+                config_->enemy.shapeRadius,
+                distVertices(random_),
+                sf::Color(distRGB(random_), distRGB(random_), distRGB(random_)),
+                config_->enemy.outlineColor.toSFML(),
+                config_->enemy.outlineThickness
         );
 
         while (true) {
-            enemy->cTransform->pos = {(float) distX(m_random), (float) distY(m_random)};
+            enemy->cTransform->pos = {(float) distX(random_), (float) distY(random_)};
 
-            if (!entitiesColliding(m_player, enemy))
+            if (!entitiesColliding(player_, enemy))
                 break;
         }
     }
 }
 
 void Game::spawnPlayer() {
-    m_player = m_entityManager.addEntity("player");
+    player_ = entityManager_.addEntity("player");
 
-    Vec2 centerPos = Vec2(m_config->window.width / 2.0, m_config->window.height / 2.0);
-    m_player->cTransform = std::make_shared<CTransform>(centerPos, Vec2(0), Vec2(1),
-                                                        0.0);
+    Vec2 centerPos = Vec2(config_->window.width / 2.0, config_->window.height / 2.0);
+    player_->cTransform = std::make_shared<CTransform>(centerPos, Vec2(0), Vec2(1),
+                                                       0.0);
 
-    m_player->cShape = std::make_shared<CShape>(
-            m_config->player.shapeRadius,
-            m_config->player.shapeVertices,
-            m_config->player.fillColor.toSFML(),
-            m_config->player.outlineColor.toSFML(),
-            m_config->player.outlineThickness);
+    player_->cShape = std::make_shared<CShape>(
+            config_->player.shapeRadius,
+            config_->player.shapeVertices,
+            config_->player.fillColor.toSFML(),
+            config_->player.outlineColor.toSFML(),
+            config_->player.outlineThickness);
 
-    m_player->cInput = std::make_shared<CInput>();
+    player_->cInput = std::make_shared<CInput>();
 }
 
 void Game::spawnBullet(const Vec2 &mousePos) {
-    auto bullet = m_entityManager.addEntity("bullet");
+    auto bullet = entityManager_.addEntity("bullet");
 
-    float angle = std::atan2(mousePos.y - m_player->cTransform->pos.y, mousePos.x - m_player->cTransform->pos.x);
+    float angle = std::atan2(mousePos.y - player_->cTransform->pos.y, mousePos.x - player_->cTransform->pos.x);
 
     Vec2 direction = Vec2(std::cos(angle), std::sin(angle));
     direction.normalize();
 
     bullet->cTransform = std::make_shared<CTransform>(
-            m_player->cTransform->pos,
-            direction * m_config->bullet.speed,
+            player_->cTransform->pos,
+            direction * config_->bullet.speed,
             Vec2(1),
             0
     );
 
     bullet->cShape = std::make_shared<CShape>(
-            m_config->bullet.shapeRadius,
-            m_config->bullet.shapeVertices,
-            m_config->bullet.fillColor.toSFML(),
-            m_config->bullet.outlineColor.toSFML(),
-            m_config->bullet.outlineThickness
+            config_->bullet.shapeRadius,
+            config_->bullet.shapeVertices,
+            config_->bullet.fillColor.toSFML(),
+            config_->bullet.outlineColor.toSFML(),
+            config_->bullet.outlineThickness
     );
 }

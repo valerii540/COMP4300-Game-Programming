@@ -8,19 +8,19 @@
 #include <random>
 
 class Game {
-    std::shared_ptr<ConfigLoader::GameConfig> m_config;
-    sf::RenderWindow                          m_window;
-    EntityManager                             m_entityManager;
-    sf::Font                                  m_font;
-    sf::Text                                  m_text;
-    int                                       m_score              = 0;
-    int                                       m_currentFrame       = 0;
-    int                                       m_lastEnemySpawnTime = 0;
-    bool                                      m_paused             = false;
-    bool                                      m_running            = true;
-    std::mt19937                              m_random             = std::mt19937(time(nullptr));;
+    std::shared_ptr<ConfigLoader::GameConfig> config_;
+    sf::RenderWindow                          window_;
+    EntityManager                             entityManager_;
+    sf::Font                                  font_;
+    sf::Text                                  text_;
+    int                                       score_              = 0;
+    int                                       currentFrame_       = 0;
+    int                                       lastEnemySpawnTime_ = 0;
+    bool                                      paused_             = false;
+    bool                                      running_            = true;
+    std::mt19937                              random_             = std::mt19937(time(nullptr));;
 
-    std::shared_ptr<Entity> m_player;
+    std::shared_ptr<Entity> player_;
 
     void setPaused(bool paused);
 
