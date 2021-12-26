@@ -18,7 +18,7 @@ class Game {
     int                                       lastEnemySpawnTime_ = 0;
     bool                                      paused_             = false;
     bool                                      running_            = true;
-    std::mt19937                              random_             = std::mt19937(time(nullptr));;
+    std::mt19937                              random_             = std::mt19937(time(nullptr));
 
     std::shared_ptr<Entity> player_;
 

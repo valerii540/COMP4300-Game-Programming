@@ -35,8 +35,8 @@
   "enemy": {
     "shapeRadius": 32,
     "collisionRadius": 32,
-    "minSpeed": 3,
-    "maxSpeed": 3,
+    "minSpeed": -5,
+    "maxSpeed": 5,
     "outlineColor": {
       "r": 255,
       "g": 255,

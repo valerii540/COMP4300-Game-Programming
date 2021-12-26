@@ -37,6 +37,9 @@ void Game::sCollision() {
             spawnPlayer();
         }
 
+        if (itCollidingWithWalls(enemy, enemy->cTransform->pos))
+            enemy->cTransform->speed *= -1.f;
+
         for (const auto &bullet: entityManager_.getEntities("bullet")) {
             if (entitiesColliding(enemy, bullet)) {
                 bullet->destroy();
@@ -46,7 +49,6 @@ void Game::sCollision() {
         }
     }
 }
-
 
 bool Game::itCollidingWithWalls(const std::shared_ptr<Entity> &entity, Vec2 &position) {
     float shapeRadius = entity->cShape->circle.getRadius();
@@ -106,9 +108,13 @@ void Game::sMovement() {
     else
         player_->cTransform->speed *= -1.f;
 
-    //Bullets movement
+    // Bullets movement
     for (const auto &bullet: entityManager_.getEntities("bullet"))
         bullet->cTransform->pos += bullet->cTransform->speed;
+
+    // Enemies movement
+    for (const auto &enemy: entityManager_.getEntities("enemy"))
+        enemy->cTransform->pos += enemy->cTransform->speed;
 }
 
 void Game::sUserInput() {
@@ -225,11 +231,12 @@ void Game::sEnemySpawner() {
         );
         auto distVertices = std::uniform_int_distribution(config_->enemy.minVertices, config_->enemy.maxVertices);
         auto distRGB      = std::uniform_int_distribution(0, 255);
+        auto distSpeed    = std::uniform_real_distribution(config_->enemy.minSpeed, config_->enemy.maxSpeed);
 
         auto enemy = entityManager_.addEntity("enemy");
         enemy->cTransform = std::make_shared<CTransform>(
-                Vec2(0),
-                Vec2(0),
+                Vec2((float) distX(random_), (float) distY(random_)),
+                Vec2(distSpeed(random_), distSpeed(random_)),
                 Vec2(1),
                 0
         );
@@ -241,12 +248,8 @@ void Game::sEnemySpawner() {
                 config_->enemy.outlineThickness
         );
 
-        while (true) {
+        while (entitiesColliding(player_, enemy))
             enemy->cTransform->pos = {(float) distX(random_), (float) distY(random_)};
-
-            if (!entitiesColliding(player_, enemy))
-                break;
-        }
     }
 }
 
