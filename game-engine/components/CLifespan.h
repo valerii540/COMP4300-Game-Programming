@@ -3,10 +3,10 @@
 
 class CLifespan {
 public:
-    int remaining = 0;
-    int total     = 0;
+    const int total;
+    int       remaining;
 
-    CLifespan(int total)
+    explicit CLifespan(int total)
             : remaining(total), total(total) {}
 };
 

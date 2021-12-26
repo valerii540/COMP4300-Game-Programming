@@ -19,6 +19,7 @@ void Game::run() {
             sUserInput();
             sMovement();
             sEnemySpawner();
+            sLifespan();
 
             currentFrame_++;
         }
@@ -172,19 +173,40 @@ void Game::sUserInput() {
 }
 
 void Game::sLifespan() {
-
+    for (const auto &entity: entityManager_.getEntities())
+        if (entity->cLifespan) {
+            entity->cLifespan->remaining--;
+            if (entity->cLifespan->remaining == 0) entity->destroy();
+        }
 }
 
 void Game::sRender() {
     window_.clear();
 
-    for (const auto &entity: entityManager_.getEntities())
-        if (entity->cShape && entity->cTransform) {
-            entity->cTransform->angle += 1.0f;
-            entity->cShape->circle.setRotation(entity->cTransform->angle);
-            entity->cShape->circle.setPosition(entity->cTransform->pos.x, entity->cTransform->pos.y);
-            window_.draw(entity->cShape->circle);
-        }
+    // Player rendering
+    player_->cTransform->angle += 1.0f;
+    player_->cShape->circle.setRotation(player_->cTransform->angle);
+    player_->cShape->circle.setPosition(player_->cTransform->pos.x, player_->cTransform->pos.y);
+    window_.draw(player_->cShape->circle);
+
+    // Enemy rendering
+    for (const auto &enemy: entityManager_.getEntities("enemy")) {
+        enemy->cTransform->angle += 1.0f;
+        enemy->cShape->circle.setRotation(enemy->cTransform->angle);
+        enemy->cShape->circle.setPosition(enemy->cTransform->pos.x, enemy->cTransform->pos.y);
+        window_.draw(enemy->cShape->circle);
+    }
+
+    //Bullet rendering
+    for (const auto &bullet: entityManager_.getEntities("bullet")) {
+        bullet->cShape->circle.setPosition(bullet->cTransform->pos.x, bullet->cTransform->pos.y);
+
+        auto color = sf::Color(bullet->cShape->circle.getFillColor());
+        color.a = 255 * bullet->cLifespan->remaining / config_->bullet.lifespan;
+        bullet->cShape->circle.setFillColor(color);
+
+        window_.draw(bullet->cShape->circle);
+    }
 
     window_.display();
 }
@@ -260,11 +282,15 @@ void Game::spawnBullet(const Vec2 &mousePos) {
             0
     );
 
-    bullet->cShape = std::make_shared<CShape>(
+    auto invisibleOutline = config_->bullet.outlineColor.toSFML();
+    invisibleOutline.a = 0;
+    bullet->cShape     = std::make_shared<CShape>(
             config_->bullet.shapeRadius,
             config_->bullet.shapeVertices,
             config_->bullet.fillColor.toSFML(),
-            config_->bullet.outlineColor.toSFML(),
+            invisibleOutline,
             config_->bullet.outlineThickness
     );
+
+    bullet->cLifespan = std::make_shared<CLifespan>(config_->bullet.lifespan);
 }
