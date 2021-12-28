@@ -9,6 +9,8 @@ public:
     double x = 0.0;
     double y = 0.0;
 
+    Vec2() = default;
+
     Vec2(double x, double y) : x(x), y(y) {}
 
     Vec2(double xy) : x(xy), y(xy) {}
